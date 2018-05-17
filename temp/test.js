@@ -1,12 +1,13 @@
-var toggles = document.querySelectorAll('.c-hamburger')
-for (var i = toggles.length - 1; i >= 0; i--) {
-  var toggle = toggles[i]
-  toggleHandler(toggle)
-}
+$('.chart-circle').each(function() {
+  let $this = $(this)
 
-function toggleHandler(toggle) {
-  toggle.addEventListener('click', function (e) {
-    e.preventDefault()
-      (this.classList.contains('is-active') === true) ? this.classList.remove('is-active') : this.classList.add('is-active')
+  $this.circleProgress({
+    fill: {
+      color: tabler.colors[$this.attr('data-color')] || tabler.colors.blue
+    },
+    size: $this.height(),
+    startAngle: -Math.PI / 4 * 2,
+    emptyFill: '#F4F4F4',
+    lineCap: 'round'
   })
-}
+})

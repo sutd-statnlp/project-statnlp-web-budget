@@ -19,18 +19,29 @@ export default {
     return {
     }
   },
+  methods: {
+    loadCircle () {
+      $(this.$el).circleProgress({
+        value: this.percentValue,
+        thickness: 3,
+        fill: {
+          color: tabler.colors['blue'] || tabler.colors.blue
+        },
+        size: 40,
+        startAngle: -Math.PI / 4 * 2,
+        emptyFill: '#F4F4F4',
+        lineCap: 'round'
+      })
+    }
+  },
   mounted () {
-    $(this.$el).circleProgress({
-      value: this.percentValue,
-      thickness: 3,
-      fill: {
-        color: tabler.colors['blue'] || tabler.colors.blue
-      },
-      size: 40,
-      startAngle: -Math.PI / 4 * 2,
-      emptyFill: '#F4F4F4',
-      lineCap: 'round'
-    })
+    this.loadCircle()
+  },
+  watch: {
+    percent (value) {
+      console.log(value)
+      this.loadCircle()
+    }
   }
 }
 </script>
