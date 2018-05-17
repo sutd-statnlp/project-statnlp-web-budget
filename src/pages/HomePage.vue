@@ -3,7 +3,7 @@
     <div class="row row-cards">
        <div class="col-12">
         <div class="row">
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <div class="card">
               <div class="card-body text-center">
                 <div class="h5">Total Budget</div>
@@ -14,7 +14,7 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-3">
+          <!-- <div class="col-sm-3">
             <div class="card">
               <div class="card-body text-center">
                 <div class="h5">Total Organization</div>
@@ -24,8 +24,8 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="col-sm-3">
+          </div> -->
+          <div class="col-sm-4">
             <div class="card">
               <div class="card-body text-center">
                 <div class="h5">Balance</div>
@@ -36,7 +36,7 @@
               </div>
             </div>
           </div>
-           <div class="col-sm-3">
+           <div class="col-sm-4">
             <div class="card">
               <div class="card-body text-center">
                 <div class="h5">Usage</div>
@@ -59,6 +59,7 @@
                   <th>Name</th>
                   <th>Amount</th>
                   <th class="text-center">Percentage</th>
+                  <th>Usage</th>
                   <th>Description</th>
                 </tr>
               </thead>
@@ -69,14 +70,22 @@
                   <td class="m-amount">
                     <div class="input-group">
                       <span class="input-group-prepend">
-                        <span class="input-group-text">S$</span>
+                        <span class="input-group-text">S$<span hidden>{{item.amount}}</span></span>
                       </span>
                       <input type="number" min="0" v-model="item.amount" class="form-control text-right"  aria-label="Amount (to the nearest dollar)">
                     </div>
-                    <span hidden>{{item.amount}}</span>
+
                   </td>
                   <td class="text-center">
                     <CircleProgress :percent="item.amount/totalBudget*100 | limit(2)" :percentValue="item.amount/totalBudget"/>
+                  </td>
+                   <td class="m-amount">
+                    <div class="input-group">
+                      <span class="input-group-prepend">
+                        <span class="input-group-text">S$ <span hidden>{{item.usage}}</span></span>
+                      </span>
+                      <input type="number" min="0" v-model="item.usage" class="form-control text-right"  aria-label="Amount (to the nearest dollar)">
+                    </div>
                   </td>
                   <td>
                     <textarea rows="2" class="form-control" placeholder="Enter description" value="Mike"  v-model="item.description"></textarea>
@@ -106,43 +115,65 @@ export default {
       orgs: [
         {
           name: 'A*STAR',
-          amount: 6000
+          amount: 6000,
+          usage: 0
         },
         {
           name: 'NTU',
-          amount: 6000
+          amount: 6000,
+          usage: 0
         },
         {
           name: 'NUS',
-          amount: 6000
+          amount: 6000,
+          usage: 0
         },
         {
           name: 'SMU',
-          amount: 6000
+          amount: 6000,
+          usage: 0
         },
         {
           name: 'SUTD',
-          amount: 6000
+          amount: 6000,
+          usage: 0
         },
         {
           name: 'Central Account',
-          amount: 3000
+          amount: 3000,
+          usage: 0
         }
       ]
     }
   },
   methods: {
+    save () {
+      this.loadDataTable()
+    },
+    loadDataTable () {
+      $('#tbl-orgs').DataTable({
+        info: false,
+        paging: false,
+        searching: false,
+        dom: 'Bfrtip',
+        buttons: [
+          {
+            text: 'Save Change',
+            action: function (e, dt, node, config) {
+              this.loadDataTable()
+            }.bind(this)
+          },
+          'copy', 'excel', 'pdf', 'pdf', 'print'
+        ],
+        destroy: true
+      })
+      $('.dt-buttons button').removeClass('dt-button')
+      $('.dt-buttons button').addClass('btn')
+      $('.dt-buttons button').addClass('btn btn-primary')
+    }
   },
   mounted () {
-    let table = $('#tbl-orgs').DataTable({
-      info: false,
-      paging: false,
-      searching: true,
-      dom: 't'
-    })
-    $('#input-search').keyup(function () {
-      table.search($(this).val()).draw()
-    })
+    this.loadDataTable()
   },
   computed: {
     totalBudget () {
@@ -162,7 +193,14 @@ export default {
       return this.totalBudget - this.usage
     },
     usage () {
-      return 10000
+      let total = 0
+      this.orgs.forEach(o => {
+        if (o.usage === '') {
+          o.usage = 0
+        }
+        total += parseFloat(o.usage)
+      })
+      return total
     }
   }
 }
