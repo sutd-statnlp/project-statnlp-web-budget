@@ -163,7 +163,7 @@ export default {
               this.loadDataTable()
             }.bind(this)
           },
-          'copy', 'excel', 'pdf', 'pdf', 'print'
+          'copy', 'excel', 'pdf', 'print'
         ],
         destroy: true
       })
